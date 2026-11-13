@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LunarSite AI | Mission Intelligence Platform</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="loader-content">
+            <div class="moon-loader"></div>
+            <h2>Initializing LunarSite AI...</h2>
+            <p>Loading missions, LRO textures, AI engine</p>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <span class="nasa-dot"></span>
+            <h1>LunarSite AI</h1>
+        </div>
+        <div class="subtitle">Mission Intelligence Platform | NASA Space Apps 2026</div>
+    </header>
+
+    <div id="container"></div>
+
+    <!-- Right Panel - Mission Details -->
+    <aside id="panel">
+        <div class="panel-header">
+            <h2>🌕 Mission Details</h2>
+            <button id="closePanel">✕</button>
+        </div>
+        <div id="panelContent">
+            <p class="hint">Click any marker on the Moon or a mission below to view AI-powered analysis.</p>
+        </div>
+    </aside>
+
+    <!-- Left Top - What-If Simulator -->
+    <aside id="simulatorPanel">
+        <div class="panel-header">
+            <h3>🎮 What-If Simulator</h3>
+        </div>
+        <p class="small">Adjust parameters to score a custom landing site</p>
+        <label>Water Ice: <span id="val-ice">70</span></label>
+        <input id="iceSlider" type="range" min="0" max="100" value="70">
+        <label>Sunlight: <span id="val-sun">70</span></label>
+        <input id="sunSlider" type="range" min="0" max="100" value="70">
+        <label>Terrain: <span id="val-terrain">70</span></label>
+        <input id="terrainSlider" type="range" min="0" max="100" value="70">
+        <label>Science: <span id="val-science">70</span></label>
+        <input id="scienceSlider" type="range" min="0" max="100" value="70">
+        <div class="sim-result">
+            <span id="simScore">70</span>
+            <small id="simRecommendation">Strong candidate</small>
+        </div>
+    </aside>
+
+    <!-- Left Bottom - Comparison -->
+    <aside id="comparisonPanel">
+        <div class="panel-header">
+            <h3>⚖️ Compare Missions</h3>
+        </div>
+        <select id="compareA"><option value="">Select Mission A</option></select>
+        <select id="compareB"><option value="">Select Mission B</option></select>
+        <div id="comparisonResult"></div>
+    </aside>
+
+    <!-- Right Top - Live NASA Data -->
+    <div id="liveData">
+        <div class="panel-header">
+            <h3>🛰️ Live Data</h3>
+        </div>
+        <div class="live-item">
+            <span class="live-label">Space Weather Events</span>
+            <span class="live-value" id="weatherCount">—</span>
+        </div>
+        <div class="live-item">
+            <span class="live-label">NASA APOD</span>
+            <span class="live-value" id="apodTitle">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Right Middle - ISS Tracker -->
+    <div id="issTracker">
+        <div class="panel-header">
+            <h3>🛰️ ISS Live</h3>
+        </div>
+        <div class="iss-coord">
+            <span>Lat: <b id="issLat">—</b></span>
+            <span>Lon: <b id="issLon">—</b></span>
+        </div>
+        <div class="iss-alt"><span>Altitude: <b id="issAlt">—</b> km</span></div>
+        <div class="iss-velocity"><span>Speed: <b id="issVel">—</b> km/h</span></div>
+        <canvas id="issCanvas" width="200" height="100"></canvas>
+    </div>
+
+    <!-- Mission Planner -->
+    <div id="plannerPanel">
+        <div class="panel-header">
+            <h3>🧠 Mission Planner</h3>
+        </div>
+        <label>Budget</label>
+        <select id="plannerBudget">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+        </select>
+        <label>Risk Tolerance</label>
+        <select id="plannerRisk">
+            <option value="safe">Safe</option>
+            <option value="balanced" selected>Balanced</option>
+            <option value="risky">Risky</option>
+        </select>
+        <label>Mission Type</label>
+        <select id="plannerType">
+            <option value="science">Science</option>
+            <option value="mining">Mining</option>
+            <option value="exploration">Exploration</option>
+        </select>
+        <button id="plannerRun">Find Best Site</button>
+        <div id="plannerResult"></div>
+    </div>
+
+    <!-- Mission Chips Bar -->
+    <div id="missionBar">
+        <div class="mission-scroll" id="missionList"></div>
+    </div>
+
+    <!-- Timeline Slider -->
+    <div id="timelinePanel">
+        <div class="timeline-label">
+            <span>Timeline</span>
+            <span id="timelineYear">2026</span>
+        </div>
+        <input id="timelineSlider" type="range" min="1969" max="2026" value="2026" step="1">
+        <button id="resetTimeline" title="Reset to 2026">↺</button>
+    </div>
+
+    <!-- Controls -->
+    <div id="controls">
+        <button id="toggleRotation" title="Pause/Play">⏸</button>
+        <button id="resetView" title="Reset View">🏠</button>
+        <button id="toggleIce" title="Show Water Ice">❄️</button>
+        <button id="toggleApollo" title="Show Apollo Sites">🌙</button>
+        <button id="terrainBtn" title="Land on Surface">🏔️</button>
+        <button id="multiplayerBtn" title="Multiplayer">👥</button>
+        <button id="stopVoice" title="Stop Voice">🔇</button>
+    </div>
+
+    <!-- Stats -->
+    <div id="stats">
+        <div class="stat"><span class="stat-label">Missions</span><span class="stat-value" id="missionCount">0</span></div>
+        <div class="stat"><span class="stat-label">Sites</span><span class="stat-value" id="siteCount">0</span></div>
+        <div class="stat"><span class="stat-label">Top Score</span><span class="stat-value" id="topScore">0</span></div>
+    </div>
+
+    <!-- Multiplayer Panel -->
+    <div id="multiplayerPanel" style="display:none;">
+        <div class="panel-header">
+            <h3>👥 Multiplayer</h3>
+            <button id="closeMultiplayer">✕</button>
+        </div>
+        <div class="mp-status"><span>Status: <b id="mpStatus">Disconnected</b></span></div>
+        <div class="mp-users"><span>Users: <b id="mpUsers">0</b></span></div>
+        <button id="mpConnect">Connect</button>
+        <button id="mpDisconnect" style="display:none;">Disconnect</button>
+        <div class="mp-log" id="mpLog"></div>
+    </div>
+
+    <!-- Rescue Overlay -->
+    <div id="rescueOverlay">
+        <div class="rescue-box">
+            <div class="rescue-alert">⚠️ EMERGENCY</div>
+            <h2>Astronaut Distress Signal</h2>
+            <div id="rescueLocation"></div>
+            <div class="rescue-distance">Rescue Team Distance: <b id="rescueDistance">—</b></div>
+            <div class="rescue-status">🚁 Rescue team dispatched</div>
+            <button onclick="closeRescue()">Acknowledge & Close</button>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- App Files -->
+    <!-- ZAROORI: draggable.js ko api.js se PEHLE load karein -->
+    <script src="js/draggable.js"></script>
+    
+    <script src="js/data.js"></script>
+    <script src="js/scoring.js"></script>
+    <script src="js/moon.js"></script>
+    <script src="js/simulator.js"></script>
+    <script src="js/comparison.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/timeline.js"></script>
+    <script src="js/countdown.js"></script>
+    <script src="js/report.js"></script>
+    <script src="js/planner.js"></script>
+    <script src="js/terrain.js"></script>
+    <script src="js/iss.js"></script>
+    <script src="js/multiplayer.js"></script>
+    <script src="js/rescue.js"></script>
+    <script src="js/ai-director.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

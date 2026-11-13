@@ -1,0 +1,207 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+    user-select: none;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+::-webkit-scrollbar-thumb { background: rgba(74,158,255,0.5); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #4a9eff; }
+
+#loader { position: fixed; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.7s; }
+.loader-content { text-align: center; }
+.moon-loader { width: 90px; height: 90px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #ddd, #555); margin: 0 auto 24px; animation: pulse 2s infinite; box-shadow: 0 0 50px rgba(200,200,200,0.5); }
+@keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.08); opacity: 1; } }
+.loader-content h2 { font-size: 1.4rem; margin-bottom: 8px; }
+.loader-content p { color: #777; font-size: 0.85rem; }
+
+header { position: fixed; top: 0; left: 0; right: 0; padding: 22px 32px; z-index: 100; background: linear-gradient(180deg, rgba(0,0,0,0.85), transparent); pointer-events: none; }
+.logo { display: flex; align-items: center; gap: 12px; }
+.nasa-dot { width: 12px; height: 12px; background: #0b3d91; border-radius: 50%; box-shadow: 0 0 14px #0b3d91; }
+header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+.subtitle { font-size: 0.78rem; color: #777; margin-top: 4px; margin-left: 24px; }
+
+#container { position: fixed; inset: 0; }
+
+/* Draggable Styles */
+.panel-header { cursor: grab; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.panel-header:active { cursor: grabbing; }
+.dragging { opacity: 0.9; border: 1px solid #4a9eff !important; box-shadow: 0 0 25px rgba(74, 158, 255, 0.5); z-index: 9999 !important; transition: none !important; }
+.resizing { border: 1px dashed #51cf66 !important; box-shadow: 0 0 25px rgba(81, 207, 102, 0.5) !important; }
+.resize-handle:hover { background: linear-gradient(135deg, transparent 50%, #4a9eff 50%) !important; }
+
+#panel h2, #simulatorPanel h3, #comparisonPanel h3, #liveData h3, #issTracker h3,
+#plannerPanel h3, #multiplayerPanel h3, #pakistanSolar h3, #moonPhase h3 {
+    font-size: 0.95rem; color: #4a9eff; margin: 0;
+}
+
+/* Panel Base Style */
+#panel, #simulatorPanel, #comparisonPanel, #liveData, #issTracker,
+#plannerPanel, #multiplayerPanel, #pakistanSolar, #moonPhase {
+    background: rgba(8,8,16,0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+#panel { position: fixed; top: 0; right: -420px; width: 400px; height: 100vh; z-index: 200; transition: right 0.4s cubic-bezier(0.4,0,0.2,1); overflow-y: auto; padding: 28px 24px; border-radius: 0; }
+#panel.active { right: 0; }
+
+#closePanel { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; padding: 6px 12px; border-radius: 8px; transition: background 0.2s; }
+#closePanel:hover { background: rgba(255,255,255,0.1); }
+.hint { color: #777; font-size: 0.9rem; text-align: center; padding: 30px 0; line-height: 1.6; }
+
+.mission-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 22px; animation: fadeUp 0.4s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.score-badge { display: inline-flex; align-items: baseline; gap: 2px; padding: 8px 16px; border-radius: 30px; font-weight: 700; margin-bottom: 16px; }
+.score-number { font-size: 1.6rem; }
+.score-label { font-size: 0.85rem; opacity: 0.8; }
+.mission-card h3 { font-size: 1.15rem; margin-bottom: 8px; color: #4a9eff; }
+.recommendation { font-size: 0.85rem; color: #ffd43b; margin-bottom: 18px; }
+.section-title { font-size: 0.72rem; color: #666; text-transform: uppercase; letter-spacing: 1.5px; margin: 18px 0 10px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 0.88rem; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.row span { color: #888; }
+.row b { color: #fff; font-weight: 500; text-align: right; }
+.objective { font-size: 0.88rem; color: #ccc; line-height: 1.5; }
+.bar-row { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; padding: 6px 0; }
+.bar-row span { width: 80px; color: #888; }
+.bar-row b { width: 30px; text-align: right; }
+.bar { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.bar > div { height: 100%; background: linear-gradient(90deg, #4a9eff, #51cf66); border-radius: 3px; transition: width 0.6s ease; }
+
+#simulatorPanel { position: fixed; top: 90px; left: 20px; width: 260px; padding: 18px; z-index: 100; }
+.small { font-size: 0.7rem; color: #666; margin-bottom: 14px; }
+#simulatorPanel label { display: block; font-size: 0.75rem; color: #aaa; margin: 10px 0 4px; }
+#simulatorPanel input[type="range"] { width: 100%; accent-color: #4a9eff; }
+.sim-result { margin-top: 16px; padding: 12px; background: rgba(74,158,255,0.1); border-radius: 8px; text-align: center; }
+#simScore { font-size: 2rem; font-weight: 700; color: #4a9eff; }
+#simRecommendation { display: block; font-size: 0.7rem; color: #aaa; margin-top: 4px; }
+
+#comparisonPanel { position: fixed; bottom: 200px; left: 20px; width: 300px; padding: 18px; z-index: 100; max-height: 35vh; overflow-y: auto; }
+#comparisonPanel select { width: 100%; padding: 8px; margin-bottom: 8px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.8rem; }
+.compare-row { display: flex; gap: 10px; margin-top: 12px; }
+.compare-col { flex: 1; text-align: center; }
+.compare-col h3 { font-size: 0.85rem; margin-bottom: 8px; }
+.big-score { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
+.winner { text-align: center; margin-top: 12px; padding: 8px; background: rgba(81,207,102,0.15); border-radius: 8px; font-size: 0.85rem; color: #51cf66; }
+
+#liveData { position: fixed; top: 90px; right: 20px; padding: 14px 18px; z-index: 100; }
+.live-item { margin-bottom: 10px; }
+.live-item:last-child { margin-bottom: 0; }
+.live-label { display: block; font-size: 0.65rem; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+.live-value { display: block; font-size: 0.9rem; color: #4a9eff; font-weight: 600; margin-top: 2px; }
+
+#issTracker { position: fixed; top: 250px; right: 20px; width: 220px; padding: 14px 18px; z-index: 100; }
+.iss-coord, .iss-alt, .iss-velocity { display: flex; justify-content: space-between; font-size: 0.75rem; padding: 4px 0; color: #888; }
+.iss-coord b, .iss-alt b, .iss-velocity b { color: #fff; }
+#issCanvas { width: 100%; height: 100px; margin-top: 10px; border-radius: 8px; background: rgba(0,0,0,0.5); }
+
+#plannerPanel { position: fixed; top: 90px; left: 300px; width: 240px; padding: 18px; z-index: 100; }
+#plannerPanel label { display: block; font-size: 0.7rem; color: #aaa; margin: 10px 0 4px; }
+#plannerPanel select { width: 100%; padding: 6px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; font-size: 0.8rem; }
+#plannerRun { width: 100%; margin-top: 14px; padding: 10px; background: linear-gradient(135deg, #4a9eff, #0b3d91); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.85rem; font-family: 'Space Grotesk', sans-serif; }
+#plannerRun:hover { opacity: 0.9; }
+#plannerResult { margin-top: 12px; padding: 10px; background: rgba(81,207,102,0.1); border-radius: 8px; font-size: 0.75rem; text-align: center; display: none; }
+#plannerResult.show { display: block; }
+
+#pakistanSolar { position: fixed; top: 400px; right: 20px; width: 220px; padding: 14px 18px; z-index: 100; }
+#moonPhase { position: fixed; top: 520px; right: 20px; width: 220px; padding: 14px 18px; z-index: 100; }
+
+#missionBar { position: fixed; bottom: 0; left: 0; right: 0; height: 88px; z-index: 100; background: linear-gradient(0deg, rgba(0,0,0,0.92), transparent); display: flex; align-items: center; padding: 0 20px; }
+.mission-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 10px 0; width: 100%; }
+.mission-chip { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 24px; padding: 10px 18px; white-space: nowrap; cursor: pointer; transition: all 0.3s; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+.mission-chip:hover { background: rgba(74,158,255,0.18); border-color: #4a9eff; transform: translateY(-2px); }
+.mission-chip.active { background: #4a9eff; }
+.chip-score { font-weight: 700; font-size: 0.8rem; }
+
+#timelinePanel { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); width: 400px; padding: 14px 20px; z-index: 100; display: flex; align-items: center; gap: 12px; }
+.timeline-label { display: flex; flex-direction: column; font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 1px; min-width: 70px; }
+#timelineYear { font-size: 1.1rem; color: #4a9eff; font-weight: 700; letter-spacing: 0; margin-top: 2px; }
+#timelineSlider { flex: 1; accent-color: #4a9eff; cursor: pointer; }
+#resetTimeline { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; cursor: pointer; font-size: 1rem; transition: all 0.3s; }
+#resetTimeline:hover { background: rgba(74,158,255,0.3); border-color: #4a9eff; transform: rotate(180deg); }
+
+.countdown { margin-top: 16px; padding: 14px; background: linear-gradient(135deg, rgba(74,158,255,0.15), rgba(81,207,102,0.08)); border: 1px solid rgba(74,158,255,0.3); border-radius: 10px; text-align: center; }
+.countdown.launched { background: rgba(81,207,102,0.15); border-color: #51cf66; color: #51cf66; font-weight: 700; }
+.countdown-label { display: block; font-size: 0.7rem; color: #888; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+.countdown-time { display: block; font-size: 1.3rem; font-weight: 700; color: #4a9eff; font-family: 'Courier New', monospace; letter-spacing: 1px; }
+
+.export-btn { width: 100%; margin-top: 16px; padding: 12px; background: linear-gradient(135deg, #4a9eff, #0b3d91); border: none; border-radius: 10px; color: #fff; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: 'Space Grotesk', sans-serif; }
+.export-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(74,158,255,0.4); }
+
+#controls { position: fixed; bottom: 110px; right: 28px; display: flex; flex-direction: column; gap: 10px; z-index: 100; }
+#controls button { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.13); color: #fff; font-size: 1.1rem; cursor: pointer; transition: all 0.3s; backdrop-filter: blur(10px); }
+#controls button:hover { background: rgba(74,158,255,0.28); border-color: #4a9eff; transform: scale(1.1); }
+#controls button.active { background: #4a9eff; }
+
+#stats { position: fixed; bottom: 110px; right: 100px; display: flex; gap: 10px; z-index: 100; }
+.stat { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 16px; backdrop-filter: blur(10px); }
+.stat-label { display: block; font-size: 0.65rem; color: #777; text-transform: uppercase; letter-spacing: 1.2px; }
+.stat-value { display: block; font-size: 1.3rem; font-weight: 700; color: #4a9eff; margin-top: 2px; }
+
+#multiplayerPanel { position: fixed; top: 120px; right: 20px; width: 240px; padding: 18px; z-index: 300; }
+.mp-status, .mp-users { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 6px 0; color: #888; }
+.mp-status b, .mp-users b { color: #fff; }
+#mpConnect, #mpDisconnect { width: 100%; margin-top: 12px; padding: 10px; background: linear-gradient(135deg, #4a9eff, #0b3d91); border: none; border-radius: 8px; color: #fff; font-weight: 600; cursor: pointer; font-size: 0.85rem; font-family: 'Space Grotesk', sans-serif; }
+.mp-log { margin-top: 10px; max-height: 100px; overflow-y: auto; font-size: 0.7rem; color: #888; background: rgba(0,0,0,0.4); border-radius: 6px; padding: 8px; font-family: 'Courier New', monospace; }
+
+#rescueOverlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.92); z-index: 9999; display: none; justify-content: center; align-items: center; }
+.rescue-box { background: rgba(20, 10, 10, 0.98); border: 2px solid #ff6b6b; border-radius: 20px; padding: 40px; text-align: center; max-width: 500px; animation: rescuePulse 1s infinite; }
+@keyframes rescuePulse { 0%, 100% { box-shadow: 0 0 30px rgba(255, 107, 107, 0.3); } 50% { box-shadow: 0 0 60px rgba(255, 107, 107, 0.8); } }
+.rescue-alert { font-size: 1.5rem; color: #ff6b6b; font-weight: 700; margin-bottom: 20px; }
+.rescue-box h2 { color: #fff; margin-bottom: 24px; }
+.rescue-coords { display: flex; justify-content: center; gap: 30px; font-size: 1.2rem; margin-bottom: 12px; }
+.rescue-coords b { color: #4a9eff; }
+.rescue-site { font-size: 1rem; color: #ffd43b; margin-bottom: 6px; }
+.rescue-mission { font-size: 0.85rem; color: #888; margin-bottom: 24px; }
+.rescue-distance { font-size: 1rem; color: #ccc; margin-bottom: 16px; }
+.rescue-distance b { color: #51cf66; }
+.rescue-status { font-size: 0.9rem; color: #51cf66; margin-bottom: 24px; }
+.rescue-box button { padding: 14px 40px; background: #ff6b6b; border: none; border-radius: 10px; color: #fff; font-size: 1rem; font-weight: 700; cursor: pointer; font-family: 'Space Grotesk', sans-serif; }
+.rescue-box button:hover { background: #ff5252; }
+
+.sos-btn { width: 100%; margin-top: 10px; padding: 12px; background: linear-gradient(135deg, #ff6b6b, #c92a2a); border: none; border-radius: 10px; color: #fff; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.3s; font-family: 'Space Grotesk', sans-serif; }
+.sos-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,107,107,0.4); }
+
+/* Solar Alert Styles */
+.solar-alert-panel { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(30, 5, 5, 0.98); border: 2px solid #ff4d4d; padding: 20px 30px; border-radius: 12px; z-index: 99999; text-align: center; max-width: 500px; box-shadow: 0 0 40px rgba(255, 0, 0, 0.6); display: none; animation: alertPulse 1s infinite; }
+@keyframes alertPulse { 0%, 100% { box-shadow: 0 0 30px rgba(255, 77, 77, 0.4); } 50% { box-shadow: 0 0 60px rgba(255, 77, 77, 0.9); } }
+.solar-alert-title { font-size: 1.2rem; font-weight: 700; color: #ff4d4d; margin-bottom: 8px; }
+.solar-alert-desc { font-size: 0.9rem; color: #fff; margin-bottom: 15px; }
+.solar-alert-close { padding: 8px 20px; background: #ff4d4d; border: none; border-radius: 6px; color: white; cursor: pointer; font-weight: 600; font-family: 'Space Grotesk', sans-serif; }
+.solar-alert-close:hover { background: #ff1a1a; }
+.solar-alert-btn { position: fixed; top: 20px; left: 20px; width: 50px; height: 50px; border-radius: 50%; background: #ff4d4d; color: white; display: none; justify-content: center; align-items: center; font-size: 1.5rem; cursor: pointer; z-index: 99998; box-shadow: 0 0 20px rgba(255, 77, 77, 0.8); animation: btnFlash 1s infinite; border: 2px solid #fff; }
+@keyframes btnFlash { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.1); } }
+
+/* Minimize Button Style */
+.minimize-btn:hover { background: #4a9eff !important; color: #fff; }
+
+@media (max-width: 768px) {
+    #panel { width: 100%; right: -100%; }
+    #simulatorPanel, #comparisonPanel, #liveData, #issTracker, #plannerPanel, #pakistanSolar, #moonPhase { display: none; }
+    header h1 { font-size: 1rem; }
+    .subtitle { font-size: 0.68rem; }
+    #stats { bottom: 100px; right: 70px; gap: 8px; }
+    .stat { padding: 8px 12px; }
+    .stat-value { font-size: 1rem; }
+    #controls { bottom: 100px; right: 10px; }
+    #controls button { width: 40px; height: 40px; font-size: 0.95rem; }
+    #timelinePanel { width: 90%; bottom: 190px; padding: 10px 14px; }
+    .timeline-label { font-size: 0.6rem; }
+    #timelineYear { font-size: 0.9rem; }
+    .countdown-time { font-size: 1rem; }
+}
+
+/* =========================================
+   PANEL FORCE SHOW FIX (Naya)
+   ========================================= */
+#panel.force-show {
+    right: 0 !important;
+    transition: none !important;
+}

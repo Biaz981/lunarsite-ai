@@ -34,3 +34,6 @@ Built by **Biaz Ahmad** | Pakistan | NASA Space Apps Challenge 2026
 
 ```bash
 python -m http.server 8000
+## Live Demo (No Installation Required)
+Click here to run the project directly in your browser:
+**https://biaz981.github.io/lunarsite-ai/**
